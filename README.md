@@ -9,6 +9,12 @@ All thumbnails will be saved to `'./thumbnails/thumbnail_name.png'`
 Example: `https://osu.ppy.sh/scores/mania/543698110`<br>
 This would look like:
 ```py
+# VALID TYPES:
+#    osu = standard
+#  taiko = taiko
+# fruits = catch
+#  mania = mania
+
 type = 'mania'
 score_id = 543698110
 
