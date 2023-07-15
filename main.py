@@ -106,7 +106,7 @@ def type_text(image:Image, xy:tuple, anchor:str, text:str, font:ImageFont, font_
     draw = ImageDraw.Draw(result)
     draw.text(xy, text, anchor=anchor, font=font, fill=font_color)
     return result
-def create_thumbnail(username:str, song_name:str, song_artist:str, difficulty_name:str, bpm:int, star_rating:float, accuracy:float, misses:int, modifiers:list, performance:int, max_combo:int, combo_limit:int, score_rank:int, rank:str, background_path:str, pfp_path:str, flag_path:str):
+def create_thumbnail(username:str, song_name:str, song_artist:str, difficulty_name:str, bpm:int, star_rating:float, accuracy:float, misses:int, modifiers:list, performance:int, max_combo:int, combo_limit:int, score_rank:int, rank:str, background_path:str, pfp_path:str, flag_path:str, use_score:bool):
     width = 1280
     height = 720
 
@@ -121,6 +121,13 @@ def create_thumbnail(username:str, song_name:str, song_artist:str, difficulty_na
         score_rank = f'#{score_rank}'
 
     combo_max_combo = f'{max_combo}/{combo_limit}x'
+
+    background_offset = -199
+    banner_offset = 0
+
+    if (use_score):
+        background_offset = -9
+        banner_offset = 260
 
     font38 = ImageFont.truetype('./fonts/VarelaRound-Regular.ttf', 38)
     font30 = ImageFont.truetype('./fonts/VarelaRound-Regular.ttf', 30)
@@ -144,11 +151,11 @@ def create_thumbnail(username:str, song_name:str, song_artist:str, difficulty_na
     bg_width = background.width
     bg_height = background.height
     ox = (bg_width/2 * 1.8 - width/2)
-    oy = (bg_height/2 * 1.8 - height/2 - 9)
+    oy = (bg_height/2 * 1.8 - height/2 + background_offset)
     img.paste(background.resize((int(bg_width * 1.8), int(bg_height * 1.8))).crop((ox, oy, width + ox, height + oy)).crop((0, 0, width, height)).filter(ImageFilter.BoxBlur(10)), (0, 0, width, height), mask=mask_bg)
     rounded_rectangle(img, (18, 23, 1244 + 18, 262 + 23), 29, colors['COL2'])
     ox = (bg_width/2 * 1.31 - width/2)
-    oy = (bg_height/2 * 1.31 - height/2 + 260)
+    oy = (bg_height/2 * 1.31 - height/2 + banner_offset)
     img.paste(background.resize((int(bg_width * 1.31), int(bg_height * 1.31))).crop((ox, oy, width + ox, height + oy)).crop((0, 0, width, height)), (0, 0, width, height), mask=mask_banner)
     if len(difficulty_name) > 22:
         difficulty_name = f'{difficulty_name[:19]}...'
@@ -210,22 +217,6 @@ def create_thumbnail(username:str, song_name:str, song_artist:str, difficulty_na
         img = type_text(img, (185-17, 561), 'mm', preview_ranks[rank][0], font284, colors[rank], True, True, colors[rank], 25, 1)
         img = type_text(img, (185+17, 561), 'mm', preview_ranks[rank][1], font284, colors[rank], True, True, colors[rank], 25, 1)
     return img
-def download_img(uri:str, path:str):
-    res = requests.get(uri)
-    with open(path, "wb") as f:
-        f.write(res.content)
-def download(id:int):
-    name = id
-    path = f'./maps/{name}.osz'
-    directory_to_extract_to = f'./maps/{name}/'
-    resp = requests.get(f'https://beatconnect.io/b/{id}')
-    with open(path, 'wb') as f:
-        for buff in resp:
-            f.write(buff)
-    with zipfile.ZipFile(path, 'r') as zip_ref:
-        zip_ref.extractall(directory_to_extract_to)
-    time.sleep(0.1)
-    os.remove(path)
 def get_score_data(type:str, score_id:int):
     response_token = requests.post('https://osu.ppy.sh/oauth/token', headers={'Accept': 'application/json'}, data={'client_id': '23406', 'client_secret': 'lFeWQJ8qNMJgGsGlk8gj1b9rkgp7Zb0C4eFeA4IE', 'grant_type': 'client_credentials', 'scope': 'public'}, files=[])
     response_score = requests.get(f'https://osu.ppy.sh/api/v2/scores/{type}/{score_id}', headers={'Authorization': f'Bearer {response_token.json()["access_token"]}'})
@@ -289,6 +280,22 @@ def get_score_data(type:str, score_id:int):
     download_img(user['avatar_url'], pfp_path)
 
     return (username, song_name, song_artist, difficulty_name, bpm, star_rating, accuracy, misses, modifiers, performance, max_combo, combo_limit, score_rank, rank, background_path, pfp_path, flag_png_file_path)
+def download_img(uri: str, path: str):
+    res = requests.get(uri)
+    with open(path, "wb") as f:
+        f.write(res.content)
+def download(id: int):
+    name = id
+    path = f'./maps/{name}.osz'
+    directory_to_extract_to = f'./maps/{name}/'
+    resp = requests.get(f'https://beatconnect.io/b/{id}')
+    with open(path, 'wb') as f:
+        for buff in resp:
+            f.write(buff)
+    with zipfile.ZipFile(path, 'r') as zip_ref:
+        zip_ref.extractall(directory_to_extract_to)
+    time.sleep(0.1)
+    os.remove(path)
 # ----------------------------------------------------------------------------------------------------------------------
 
 # VALID RANKS:
@@ -332,12 +339,12 @@ if generate_thumbnail:
     if use_score:
         data = get_score_data(type, score_id)
         thumbnail = create_thumbnail(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8],
-                                     data[9], data[10], data[11], data[12], data[13], data[14], data[15], data[16])
+                                     data[9], data[10], data[11], data[12], data[13], data[14], data[15], data[16], use_score)
         thumbnail.save(f'./thumbnails/{type}/{score_id}.png')
     else:
         thumbnail = create_thumbnail(username, song_name, song_artist, difficulty_name, bpm, star_rating, accuracy,
                                      misses, modifiers, performance, max_combo, combo_limit, score_rank, rank,
-                                     background_path, pfp_path, flag_path)
+                                     background_path, pfp_path, flag_path, use_score)
         thumbnail.save(f'./thumbnails/{game_mode}/{username.replace(" ", "_")}_{song_name.replace(" ", "_")}_{difficulty_name.replace(" ", "_")}_{score_rank}.png')
 # ----------------------------------------------------------------------------------------------------------------------
 if print_title:
