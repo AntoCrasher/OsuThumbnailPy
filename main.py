@@ -265,17 +265,6 @@ def get_score_data(type:str, score_id:int):
     background_image_url = f'https://assets.ppy.sh/beatmaps/{beatmapset["id"]}/covers/cover@2x.jpg'
     background_path = f'./backgrounds/{beatmapset["id"]}.png'
     download_img(background_image_url, background_path)
-    # if not os.path.exists(f'./maps/{beatmapset["id"]}'):
-    #     download(beatmapset['id'])
-    # files = os.listdir(f'./maps/{beatmapset["id"]}')
-    # name = ''
-    # for file in files:
-    #     if file.find(f'[{difficulty_name}].osu') > 0:
-    #         name = file
-    # path = f'./maps/{beatmapset["id"]}/{name}'
-    # data = open(path, 'r', encoding='utf-8').read()
-    # bg_name = data.split('//Background and Video events\n0,0,"')[1].split('"')[0]
-    # background_path = f'./maps/{beatmapset["id"]}/{bg_name}'
     pfp_path = f'./pfps/{username}.png'
     download_img(user['avatar_url'], pfp_path)
 
