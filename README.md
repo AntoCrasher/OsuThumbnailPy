@@ -60,6 +60,8 @@ This will generate a thumbnails named `f'./backgrounds/{username}_{song_name}_{d
 Current example image:<br>
 ![manual_example](./thumbnails/mania/Anto_Crasher555_Kawaki_o_Ameku_(TV_Size)_Applequestria_-1.png)
 
+Inspired by thumbnails by youtuber: [cpol](https://www.youtube.com/@cpol_v1)
+
 # Auto map downloader
 
 When `download.py` is run, it will allow you to copy a beatmap link to your clipboard, and then it will automatically download and open the osu map for you.
