@@ -22,7 +22,10 @@ generate_thumbnail = True
 print_title = False
 use_score = True
 ```
+![score_example](./thumbnails/mania/543698110.png)
 If you want to create a video title, you can set `print_title` to `True`.<br>
+
+Example title: `6.13⭐ | Kaneko Chiharu - Kai Dan [Daitatsujin] 90.58% (#19834 181pp 52❌)`
 
 Another way to generate a thumbnail is to input the score data manually.
 Example:
@@ -53,7 +56,9 @@ background_path:      str   = './backgrounds/Kawaki_o_Ameku.jpg'  # string backg
 pfp_path:             str   = './pfps/Anto_Crasher555.png'        # string profile picture path (starts by './pfps/')
 flag_path:            str   = './flags/TH.png'                    # string flag path (starts by './flags/')
 ```
-This will generate a thumbnails named `f'./backgrounds/{username}_{song_name}_{difficulty_name}_{score_rank}.png'`
+This will generate a thumbnails named `f'./backgrounds/{username}_{song_name}_{difficulty_name}_{score_rank}.png'`<br>
+Current example image:<br>
+![manual_example](./thumbnails/mania/Anto_Crasher555_Kawaki_o_Ameku_(TV_Size)_Applequestria_-1.png)
 
 # Auto map downloader
 
